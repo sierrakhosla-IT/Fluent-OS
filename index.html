@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics="">
+<style>
+:root{
+--canvas:#F4F5FC;
+--ink:#0E1020;--ink2:#3F4452;--ink3:#3F4452;--accent-ink:#3D2CB0;
+--glass:rgba(255,255,255,.56);--glass-strong:rgba(255,255,255,.72);--glass-subtle:rgba(255,255,255,.34);--glass-border:rgba(255,255,255,.58);
+--veil:rgba(255,255,255,.34);--field:rgba(255,255,255,.62);--line:rgba(14,16,32,.08);
+--coral:#7C6BF2;--peach:#A79BFF;--pink:#D7CCFF;--deep:#5A45E0;--blue:#6C5CE7;--good:#0FA37F;
+--tintwarm:rgba(108,92,231,.09);--tintcool:rgba(108,92,231,.05);
+--glow:rgba(90,69,224,.30);--bloom:rgba(124,107,242,.16);--ring:rgba(124,107,242,.18);--scrim:rgba(18,16,38,.32);--shadow-nav:rgba(14,16,32,.05);
+--shadow-soft:0 2px 10px rgba(14,16,32,.05),0 10px 28px rgba(14,16,32,.05);--shadow-lift:0 2px 8px rgba(14,16,32,.04),0 22px 50px rgba(14,16,32,.10);
+--radius-sm:12px;--radius-md:16px;--radius-lg:22px;
+--blur-sm:blur(18px) saturate(150%);--blur-md:blur(26px) saturate(165%);--blur-lg:blur(40px) saturate(180%);
+--dim-side:rgba(244,245,252,.42);
+}
+html[data-theme=dark]{
+--canvas:#0B0C14;
+--ink:#F2F3F9;--ink2:#C2C7D4;--ink3:#C2C7D4;--accent-ink:#B9AEFF;
+--glass:rgba(26,28,42,.54);--glass-strong:rgba(30,32,48,.70);--glass-subtle:rgba(24,26,40,.36);--glass-border:rgba(255,255,255,.13);
+--veil:rgba(12,13,22,.42);--field:rgba(255,255,255,.08);--line:rgba(255,255,255,.09);
+--coral:#8B7BFF;--peach:#A79BFF;--pink:#CBC0FF;--deep:#6C5CE7;
+--glow:rgba(108,92,231,.36);--bloom:rgba(139,123,255,.20);--ring:rgba(139,123,255,.22);--scrim:rgba(4,4,10,.56);--shadow-nav:rgba(0,0,0,.30);
+--shadow-soft:0 2px 10px rgba(0,0,0,.24),0 12px 32px rgba(0,0,0,.26);--shadow-lift:0 24px 56px rgba(0,0,0,.42);
+--dim-side:rgba(8,9,16,.62);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{min-height:100vh;color:var(--ink);font:14px/1.5 -apple-system,"SF Pro Text","SF Pro Display",BlinkMacSystemFont,"Segoe UI Variable","Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-wrap:pretty;
+background:#F4F5FC}
+[data-wall]{position:fixed;inset:-8%;z-index:0;background:url("assets/wallpaper.jpg") center center/cover no-repeat;filter:blur(20px) saturate(.96) brightness(1.06);pointer-events:none}
+[data-wall-veil]{position:fixed;inset:0;z-index:0;background:linear-gradient(155deg,rgba(255,255,255,.34) 0%,rgba(255,255,255,.24) 46%,rgba(255,255,255,.36) 100%);pointer-events:none}
+html[data-theme=dark] body{background:#0B0C14}
+html[data-theme=dark] [data-wall]{background-image:url("assets/wallpaper-dark.jpg");filter:blur(16px) saturate(.95) brightness(.72)}
+html[data-theme=dark] [data-wall-veil]{background:linear-gradient(155deg,rgba(9,10,18,.60) 0%,rgba(9,10,18,.50) 46%,rgba(9,10,18,.62) 100%)}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+textarea{resize:vertical}
+a{color:var(--deep);text-decoration:none}
+a:hover{color:var(--coral)}
+::placeholder{color:var(--ink3)}
+:focus-visible{outline:2px solid var(--deep);outline-offset:2px}
+input[type=checkbox]{accent-color:var(--deep)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media(max-width:1200px){[data-home]{grid-template-columns:minmax(0,1fr)!important}}
+@media(max-width:980px){[data-shell]{grid-template-columns:74px minmax(0,1fr)!important}[data-navlabel],[data-brandname],[data-sidefoot]{display:none!important}[data-side]{padding:18px 10px!important}[data-topbar]{padding:12px 16px!important}[data-content]{padding:18px 16px 48px!important}}
+@media(max-width:720px){[data-shell]{grid-template-columns:minmax(0,1fr)!important;padding-bottom:76px}[data-side]{position:fixed!important;inset:auto 0 0 0!important;height:76px!important;flex-direction:row!important;align-items:center;justify-content:space-around;padding:8px 6px!important;border-right:0!important;border-top:1px solid var(--glass-border)!important;background:var(--glass-strong)!important}[data-navgroup]{flex-direction:row!important;gap:2px!important;width:100%;justify-content:space-around}[data-sep],[data-brand],[data-mobilehide]{display:none!important}[data-navlabel]{display:block!important;font-size:10.5px!important}[data-side] button{flex-direction:column!important;gap:3px!important;padding:6px 4px!important;min-width:56px}[data-two]{grid-template-columns:minmax(0,1fr)!important}}
+</style>
+</helmet>
+
+<div data-wall=""></div>
+<div data-wall-veil=""></div>
+
+<div data-shell="" style="min-height:100vh;display:grid;grid-template-columns:236px minmax(0,1fr);position:relative;z-index:1">
+
+<sc-if value="{{ focus }}" hint-placeholder-val="{{ false }}"><div style="position:fixed;inset:0;background:var(--scrim);z-index:0;pointer-events:none"></div></sc-if>
+
+<aside data-side="" style="grid-column: 1; position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; padding: 20px 14px; backdrop-filter: var(--blur-lg); -webkit-backdrop-filter: var(--blur-lg); border-right: 1px solid var(--glass-border); z-index: 20; opacity: 1; background-color: #E8E5F9CF; overflow: visible">
+<sc-if value="{{ focus }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;inset:0;background:var(--dim-side);backdrop-filter:blur(2px);pointer-events:none;z-index:5"></div></sc-if>
+
+<div data-brand="" style="display:flex;align-items:center;gap:10px;padding:4px 8px 24px">
+<div style="width:30px;height:30px;border-radius:10px;background:linear-gradient(140deg,var(--peach),var(--coral) 46%,var(--pink));box-shadow:0 6px 16px var(--glow);display:grid;place-items:center;color:#fff;font-weight:700;font-size:13px">S</div>
+<div data-brandname="" style="font-weight:650;letter-spacing:-.2px;font-size:14px">Executive OS</div>
+</div>
+
+<nav data-navgroup="" style="display:flex;flex-direction:column;gap:2px">
+
+<button onClick="{{ goHome }}" style="position: relative; border: 0; background: transparent; padding: 10px 12px; border-radius: 12px; display: flex; align-items: center; gap: 12px; text-align: left; min-height: 44px; transition: background .18s; border-color: #AC9DC7" style-hover="background:var(--glass-subtle)">
+<sc-if value="{{ vHome }}" hint-placeholder-val="{{ true }}"><span style="position:absolute;inset:0;border-radius:12px;background:var(--glass-strong);border:1px solid var(--glass-border);box-shadow:0 2px 8px var(--shadow-nav)"></span><span style="position:absolute;left:0;top:13px;bottom:13px;width:3px;border-radius:3px;background:var(--coral)"></span></sc-if>
+<svg viewBox="0 0 18 18" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" style="position:relative;color:var(--ink2);flex:none"><path d="M2.8 8.2 9 3l6.2 5.2V15H2.8z"></path></svg>
+<span data-navlabel="" style="position:relative;font-size:13.5px;color:var(--ink2)">Home</span>
+</button>
+
+<button onClick="{{ goToday }}" style="position:relative;border:0;background:transparent;padding:10px 12px;border-radius:12px;display:flex;align-items:center;gap:12px;text-align:left;min-height:44px;transition:background .18s" style-hover="background:var(--glass-subtle)">
+<sc-if value="{{ vToday }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;inset:0;border-radius:12px;background:var(--glass-strong);border:1px solid var(--glass-border);box-shadow:0 2px 8px var(--shadow-nav)"></span><span style="position:absolute;left:0;top:13px;bottom:13px;width:3px;border-radius:3px;background:var(--coral)"></span></sc-if>
+<svg viewBox="0 0 18 18" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.4" style="position:relative;color:var(--ink2);flex:none"><rect x="2.6" y="3.6" width="12.8" height="11" rx="2"></rect><path d="M2.6 7.2h12.8M6.4 2.4v2.4M11.6 2.4v2.4"></path></svg>
+<span data-navlabel="" style="position:relative;font-size:13.5px;color:var(--ink2)">Today</span>
+<sc-if value="{{ overdueDot }}" hint-placeholder-val="{{ false }}"><span style="position:relative;margin-left:auto;width:6px;height:6px;border-radius:50%;background:var(--coral)"></span></sc-if>
+</button>
+
+<button onClick="{{ goTasks }}" style="position:relative;border:0;background:transparent;padding:10px 12px;border-radius:12px;display:flex;align-items:center;gap:12px;text-align:left;min-height:44px;transition:background .18s" style-hover="background:var(--glass-subtle)">
+<sc-if value="{{ vTasks }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;inset:0;border-radius:12px;background:var(--glass-strong);border:1px solid var(--glass-border);box-shadow:0 2px 8px var(--shadow-nav)"></span><span style="position:absolute;left:0;top:13px;bottom:13px;width:3px;border-radius:3px;background:var(--coral)"></span></sc-if>
+<svg viewBox="0 0 18 18" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="position:relative;color:var(--ink2);flex:none"><path d="M2.8 9.4l2.8 2.8L15 3.8"></path></svg>
+<span data-navlabel="" style="position:relative;font-size:13.5px;color:var(--ink2)">Tasks</span>
+</button>
+
+<button onClick="{{ goProjects }}" data-mobilehide="1" style="position:relative;border:0;background:transparent;padding:10px 12px;border-radius:12px;display:flex;align-items:center;gap:12px;text-align:left;min-height:44px;transition:background .18s" style-hover="background:var(--glass-subtle)">
+<sc-if value="{{ vProjects }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;inset:0;border-radius:12px;background:var(--glass-strong);border:1px solid var(--glass-border);box-shadow:0 2px 8px var(--shadow-nav)"></span><span style="position:absolute;left:0;top:13px;bottom:13px;width:3px;border-radius:3px;background:var(--coral)"></span></sc-if>
+<svg viewBox="0 0 18 18" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.4" style="position:relative;color:var(--ink2);flex:none"><rect x="2.6" y="3.2" width="12.8" height="4.4" rx="1.4"></rect><rect x="2.6" y="10.4" width="12.8" height="4.4" rx="1.4"></rect></svg>
+<span data-navlabel="" style="position:relative;font-size:13.5px;color:var(--ink2)">Projects</span>
+</button>
+
+<div data-sep="" style="height:1px;background:var(--line);margin:12px 10px"></div>
+
+<button onClick="{{ goCapture }}" style="position:relative;border:1px solid var(--glass-border);background:var(--tintwarm);padding:10px 12px;border-radius:12px;display:flex;align-items:center;gap:12px;text-align:left;min-height:44px;transition:background .18s" style-hover="background:var(--ring)">
+<svg viewBox="0 0 18 18" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" style="position:relative;color:var(--deep);flex:none"><path d="M9 4v10M4 9h10"></path></svg>
+<span data-navlabel="" style="position:relative;font-size:13.5px;color:var(--deep);font-weight:600">Capture</span>
+<sc-if value="{{ inboxDot }}" hint-placeholder-val="{{ false }}"><span style="position:relative;margin-left:auto;width:6px;height:6px;border-radius:50%;background:var(--deep)"></span></sc-if>
+</button>
+
+<div data-sep="" style="height:1px;background:var(--line);margin:12px 10px"></div>
+
+<button onClick="{{ goNotes }}" data-mobilehide="1" style="position:relative;border:0;background:transparent;padding:10px 12px;border-radius:12px;display:flex;align-items:center;gap:12px;text-align:left;min-height:44px;transition:background .18s" style-hover="background:var(--glass-subtle)">
+<sc-if value="{{ vNotes }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;inset:0;border-radius:12px;background:var(--glass-strong);border:1px solid var(--glass-border);box-shadow:0 2px 8px var(--shadow-nav)"></span><span style="position:absolute;left:0;top:13px;bottom:13px;width:3px;border-radius:3px;background:var(--coral)"></span></sc-if>
+<svg viewBox="0 0 18 18" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.4" style="position:relative;color:var(--ink2);flex:none"><rect x="3.4" y="2.8" width="11.2" height="12.4" rx="2"></rect><path d="M6.2 6.6h5.6M6.2 9.4h5.6M6.2 12.2h3.4"></path></svg>
+<span data-navlabel="" style="position:relative;font-size:13.5px;color:var(--ink2)">Notes</span>
+</button>
+
+<button onClick="{{ goAsk }}" style="position:relative;border:0;background:transparent;padding:10px 12px;border-radius:12px;display:flex;align-items:center;gap:12px;text-align:left;min-height:44px;transition:background .18s" style-hover="background:var(--glass-subtle)">
+<sc-if value="{{ vAsk }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;inset:0;border-radius:12px;background:var(--glass-strong);border:1px solid var(--glass-border);box-shadow:0 2px 8px var(--shadow-nav)"></span><span style="position:absolute;left:0;top:13px;bottom:13px;width:3px;border-radius:3px;background:var(--coral)"></span></sc-if>
+<svg viewBox="0 0 18 18" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" style="position:relative;color:var(--ink2);flex:none"><path d="M9 2.6l1.5 4.2 4.2 1.5-4.2 1.5L9 14l-1.5-4.2L3.3 8.3l4.2-1.5z"></path></svg>
+<span data-navlabel="" style="position:relative;font-size:13.5px;color:var(--ink2)">Ask AI</span>
+</button>
+
+<div data-sep="" style="height:1px;background:var(--line);margin:12px 10px"></div>
+
+<button onClick="{{ goReview }}" data-mobilehide="1" style="position:relative;border:0;background:transparent;padding:10px 12px;border-radius:12px;display:flex;align-items:center;gap:12px;text-align:left;min-height:44px;transition:background .18s" style-hover="background:var(--glass-subtle)">
+<sc-if value="{{ vReview }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;inset:0;border-radius:12px;background:var(--glass-strong);border:1px solid var(--glass-border);box-shadow:0 2px 8px var(--shadow-nav)"></span><span style="position:absolute;left:0;top:13px;bottom:13px;width:3px;border-radius:3px;background:var(--coral)"></span></sc-if>
+<svg viewBox="0 0 18 18" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" style="position:relative;color:var(--ink2);flex:none"><circle cx="9" cy="9" r="6.2"></circle><path d="M9 5.6V9l2.4 1.6"></path></svg>
+<span data-navlabel="" style="position:relative;font-size:13.5px;color:var(--ink2)">Review</span>
+<sc-if value="{{ checkinDot }}" hint-placeholder-val="{{ false }}"><span style="position:relative;margin-left:auto;width:6px;height:6px;border-radius:50%;background:var(--peach)"></span></sc-if>
+</button>
+
+<button onClick="{{ goClear }}" data-mobilehide="1" style="position:relative;border:0;background:transparent;padding:10px 12px;border-radius:12px;display:flex;align-items:center;gap:12px;text-align:left;min-height:44px;transition:background .18s" style-hover="background:var(--glass-subtle)">
+<sc-if value="{{ vClear }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;inset:0;border-radius:12px;background:var(--glass-strong);border:1px solid var(--glass-border);box-shadow:0 2px 8px var(--shadow-nav)"></span><span style="position:absolute;left:0;top:13px;bottom:13px;width:3px;border-radius:3px;background:var(--coral)"></span></sc-if>
+<svg viewBox="0 0 18 18" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" style="position:relative;color:var(--ink2);flex:none"><path d="M14.4 10.8A5.8 5.8 0 0 1 7.2 3.6a5.8 5.8 0 1 0 7.2 7.2z"></path></svg>
+<span data-navlabel="" style="position:relative;font-size:13.5px;color:var(--ink2)">Clear Day</span>
+</button>
+
+</nav>
+
+<div data-sidefoot="" style="margin-top:auto;padding:14px 10px 0;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:8px">
+<div style="font-size:12.5px;color:var(--ink2)">{{ streakLabel }}</div>
+<div style="display:flex;gap:6px">
+<button onClick="{{ goSettings }}" style="flex:1;border:1px solid var(--glass-border);background:var(--glass-subtle);border-radius:10px;padding:8px 10px;font-size:12.5px;color:var(--ink2);min-height:36px" style-hover="background:var(--glass-strong)">Settings</button>
+<button onClick="{{ toggleTheme }}" title="Switch light and dark" style="width:38px;border:1px solid var(--glass-border);background:var(--glass-subtle);border-radius:10px;color:var(--ink2);min-height:36px" style-hover="background:var(--glass-strong)">◐</button>
+</div>
+</div>
+</aside>
+
+<main style="grid-column: 2; min-width: 0; display: flex; flex-direction: column; position: static; justify-content: flex-start; background: url(&quot;./unitiled-purple-2--mtv0nub8-zwwd.png&quot;) center / cover no-repeat">
+
+<header data-topbar="" style="position:sticky;top:0;z-index:15;display:flex;align-items:center;gap:10px;padding:14px 30px;background:var(--veil);backdrop-filter:var(--blur-md);-webkit-backdrop-filter:var(--blur-md);border-bottom:1px solid var(--glass-border)">
+<div style="position:relative;flex:1;max-width:660px">
+<svg viewBox="0 0 18 18" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="position:absolute;left:14px;top:13px;color:var(--ink3);pointer-events:none"><circle cx="8" cy="8" r="5"></circle><path d="M12 12l3 3"></path></svg>
+<input value="{{ cmd }}" onChange="{{ onCmd }}" onKeyDown="{{ onCmdKey }}" onFocus="{{ onCmdFocus }}" onBlur="{{ onCmdBlur }}" placeholder="Ask, find, or capture anything…" aria-label="Ask, find, or capture anything" style="width:100%;height:42px;border:1px solid var(--glass-border);background:var(--glass-strong);border-radius:12px;padding:0 60px 0 40px;outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.5)">
+<span style="position:absolute;right:10px;top:11px;border:1px solid var(--glass-border);border-radius:6px;padding:2px 7px;color:var(--ink3);font-size:11px;background:var(--glass-subtle)">⌘K</span>
+<sc-if value="{{ cmdFocused }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;top:50px;left:0;right:0;padding:10px;background:var(--glass-strong);backdrop-filter:var(--blur-lg);-webkit-backdrop-filter:var(--blur-lg);border:1px solid var(--glass-border);border-radius:14px;box-shadow:var(--shadow-lift);display:flex;flex-wrap:wrap;gap:6px;z-index:30">
+<sc-for list="{{ cmdChips }}" as="c" hint-placeholder-count="6">
+<button onMouseDown="{{ c.onClick }}" style="border:1px solid var(--glass-border);background:var(--glass-subtle);border-radius:9px;padding:7px 11px;font-size:12.5px;color:var(--ink2)" style-hover="background:var(--tintwarm);color:var(--deep)">{{ c.label }}</button>
+</sc-for>
+</div>
+</sc-if>
+</div>
+<button onClick="{{ toggleFocus }}" style="border:1px solid var(--glass-border);background:var(--glass-subtle);border-radius:11px;padding:10px 14px;font-size:13px;color:var(--ink2);min-height:42px;white-space:nowrap" style-hover="background:var(--glass-strong)">{{ focusLabel }}</button>
+<button onClick="{{ openCapture }}" style="border:0;background:linear-gradient(135deg,var(--coral),var(--deep));color:#fff;border-radius:11px;padding:10px 16px;font-size:13px;font-weight:600;min-height:42px;box-shadow:0 8px 20px var(--glow);white-space:nowrap" style-hover="filter:brightness(1.05)">Dump it here</button>
+</header>
+
+<div data-content="" style="padding:26px 30px 56px;max-width:1460px;width:100%;margin:0 auto">
+
+<sc-if value="{{ vHome }}" hint-placeholder-val="{{ true }}">
+<section data-screen-label="Home" data-home="" style="display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:26px;align-items:start">
+<div>
+<div style="display:inline-block;padding:6px 14px;border-radius:999px;background:var(--glass);backdrop-filter:var(--blur-sm);-webkit-backdrop-filter:var(--blur-sm);border:1px solid var(--glass-border);font-size:13px;color:var(--ink);letter-spacing:.01em;font-weight:550">{{ dateStr }}</div>
+<h1 style="font-size:31px;line-height:1.14;letter-spacing:-.9px;margin:4px 0 26px;font-weight:700">{{ greeting }}</h1>
+
+<div style="padding:30px 32px;background:var(--glass-strong);backdrop-filter:var(--blur-lg);-webkit-backdrop-filter:var(--blur-lg);border:1px solid var(--glass-border);border-radius:var(--radius-lg);box-shadow:inset 0 1px 0 rgba(255,255,255,.65),var(--shadow-lift);position:relative;overflow:hidden">
+<div style="position:absolute;right:-70px;top:-90px;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle,var(--bloom),transparent 70%);pointer-events:none"></div>
+<div style="display:flex;align-items:center;gap:9px;position:relative">
+<span style="width:7px;height:7px;border-radius:50%;background:var(--coral);box-shadow:0 0 0 4px var(--ring)"></span>
+<span style="font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--deep)">NOW</span>
+</div>
+<div style="font-size:27px;line-height:1.22;letter-spacing:-.7px;font-weight:700;margin:14px 0 8px;max-width:22ch;position:relative">{{ nowTitle }}</div>
+<p style="margin:0;color:var(--ink2);font-size:14.5px;max-width:56ch;position:relative">{{ nowSupport }}</p>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;position:relative">
+<button onClick="{{ onStartNow }}" style="border:0;background:linear-gradient(135deg,var(--coral),var(--deep));color:#fff;border-radius:12px;padding:12px 22px;font-size:15px;font-weight:600;min-height:46px;white-space:nowrap;box-shadow:0 10px 24px var(--glow);transition:transform .18s,filter .18s" style-hover="filter:brightness(1.05);transform:translateY(-1px)">{{ startLabel }}</button>
+<button onClick="{{ onFinishNow }}" style="border:1px solid var(--glass-border);background:var(--glass-subtle);border-radius:12px;padding:12px 16px;font-size:14px;color:var(--ink2);min-height:46px;white-space:nowrap" style-hover="background:var(--glass-strong)">Mark done</button>
+<button onClick="{{ onChangeNow }}" style="border:1px solid var(--glass-border);background:var(--glass-subtle);border-radius:12px;padding:12px 16px;font-size:14px;color:var(--ink2);min-height:46px;white-space:nowrap" style-hover="background:var(--glass-strong)">Something else</button>
+<button onClick="{{ toggleWhy }}" style="border:0;background:transparent;color:var(--ink2);font-size:13.5px;padding:12px 8px;min-height:46px;white-space:nowrap;text-decoration:underline;text-decoration-color:var(--line)" style-hover="color:var(--deep)">Why this first</button>
+</div>
+<sc-if value="{{ whyOpen }}" hint-placeholder-val="{{ false }}">
+<p style="position:relative;margin:16px 0 0;padding:14px 16px;background:var(--glass-subtle);border:1px solid var(--glass-border);border-radius:var(--radius-md);color:var(--ink2);font-size:13.5px;max-width:62ch">{{ whyText }}</p>
+</sc-if>
+</div>
+
+<div style="margin:30px 0 10px"><div style="display:inline-flex;align-items:baseline;gap:10px;padding:7px 14px;border-radius:999px;background:var(--glass);backdrop-filter:var(--blur-sm);-webkit-backdrop-filter:var(--blur-sm);border:1px solid var(--glass-border)">
+<h2 style="font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--ink);margin:0">NEXT</h2>
+<span style="font-size:12.5px;color:var(--ink);opacity:.75">after this one</span>
+</div></div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ nextItems }}" as="t" hint-placeholder-count="2">
+<div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--glass);backdrop-filter:var(--blur-sm);-webkit-backdrop-filter:var(--blur-sm);border:1px solid var(--glass-border);border-radius:var(--radius-md);box-shadow:var(--shadow-soft)">
+<input type="checkbox" onChange="{{ t.onToggle }}" aria-label="Complete" style="width:18px;height:18px;flex:none">
+<div style="min-width:0;flex:1">
+<div style="font-size:14.5px;font-weight:550;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ t.title }}</div>
+<div style="font-size:12.5px;color:var(--ink3);margin-top:2px">{{ t.meta }}</div>
+</div>
+<button onClick="{{ t.onPromote }}" style="border:1px solid var(--glass-border);background:var(--glass-subtle);border-radius:9px;padding:7px 12px;font-size:12.5px;color:var(--ink2);flex:none" style-hover="background:var(--glass-strong)">Make it now</button>
+</div>
+</sc-for>
+<sc-if value="{{ noNext }}" hint-placeholder-val="{{ false }}">
+<div style="padding:18px 20px;color:var(--ink3);font-size:13.5px;background:var(--glass);backdrop-filter:var(--blur-md);-webkit-backdrop-filter:var(--blur-md);border:1px solid var(--glass-border);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft)">Nothing queued behind this. That is allowed.</div>
+</sc-if>
+</div>
+
+<sc-if value="{{ showCounts }}" hint-placeholder-val="{{ true }}">
+<div style="margin-top:30px;padding:20px 22px;background:var(--glass);backdrop-filter:var(--blur-md);-webkit-backdrop-filter:var(--blur-md);border:1px solid var(--glass-border);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft)">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+<h2 style="font-size:13px;font-weight:650;letter-spacing:.1em;color:var(--ink2);margin:0">TODAY</h2>
+<button onClick="{{ toggleToday }}" style="border:0;background:transparent;color:var(--ink2);font-size:13px;padding:4px 6px" style-hover="color:var(--deep)">{{ todayToggleLabel }}</button>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:22px;margin-top:14px">
+<div style="display:flex;align-items:baseline;gap:7px"><span style="font-size:22px;font-weight:600;letter-spacing:-.4px">{{ cPriority }}</span><span style="font-size:13px;color:var(--ink2)">priority</span></div>
+<div style="display:flex;align-items:baseline;gap:7px"><span style="font-size:22px;font-weight:600;letter-spacing:-.4px">{{ cQueued }}</span><span style="font-size:13px;color:var(--ink2)">queued</span></div>
+<div style="display:flex;align-items:baseline;gap:7px"><span style="font-size:22px;font-weight:600;letter-spacing:-.4px">{{ cWaiting }}</span><span style="font-size:13px;color:var(--ink2)">waiting</span></div>
+<div style="display:flex;align-items:baseline;gap:7px"><span style="font-size:22px;font-weight:700;letter-spacing:-.4px;color:var(--accent-ink)">{{ cOverdue }}</span><span style="font-size:13px;font-weight:600;color:var(--accent-ink)">overdue</span></div>
+</div>
+<sc-if value="{{ todayOpen }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:6px;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)">
+<sc-for list="{{ todayItems }}" as="t" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:12px;padding:9px 4px">
+<input type="checkbox" onChange="{{ t.onToggle }}" aria-label="Complete" style="width:17px;height:17px;flex:none">
+<span style="font-size:14px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ t.title }}</span>
+<span style="margin-left:auto;font-size:12.5px;color:var(--ink3);flex:none">{{ t.meta }}</span>
+</div>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ showProjects }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin:30px 0 8px">
+<div style="display:inline-flex;align-items:baseline;gap:10px;padding:7px 14px;border-radius:999px;background:var(--glass);backdrop-filter:var(--blur-sm);-webkit-backdrop-filter:var(--blur-sm);border:1px solid var(--glass-border)"><h2 style="font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--ink);margin:0">ACTIVE WORK</h2></div>
+<button onClick="{{ goProjects }}" style="border:0;background:transparent;color:var(--ink2);font-size:13px;padding:4px 6px" style-hover="color:var(--deep)">See all</button>
+</div>
+<div style="display:flex;flex-direction:column;padding:4px 18px;background:var(--glass);backdrop-filter:var(--blur-md);-webkit-backdrop-filter:var(--blur-md);border:1px solid var(--glass-border);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft)">
+<sc-for list="{{ homeProjects }}" as="p" hint-placeholder-count="3">
+<button onClick="{{ p.onClick }}" style="display:flex;align-items:center;gap:14px;padding:13px 8px;background:transparent;border:0;border-bottom:1px solid var(--line);text-align:left;width:100%" style-hover="background:var(--glass-subtle)">
+<span style="width:6px;height:6px;border-radius:50%;background:var(--blue);flex:none"></span>
+<span style="min-width:0;flex:1"><span style="display:block;font-size:14px;font-weight:550;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ p.name }}</span><span style="display:block;font-size:12.5px;color:var(--ink3);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ p.next }}</span></span>
+<sc-if value="{{ p.attn }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font-size:11.5px;font-weight:600;color:var(--deep);background:var(--tintwarm);border-radius:20px;padding:4px 10px">needs attention</span></sc-if>
+</button>
+</sc-for>
+</div>
+</sc-if>
+</div>
+
+<sc-if value="{{ showIntel }}" hint-placeholder-val="{{ true }}">
+<aside style="display:flex;flex-direction:column;gap:14px;position:sticky;top:96px">
+<div style="padding:18px 20px;background:var(--glass);backdrop-filter:var(--blur-md);-webkit-backdrop-filter:var(--blur-md);border:1px solid var(--glass-border);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft)">
+<div style="font-size:11.5px;font-weight:700;letter-spacing:.13em;color:var(--deep)">NEEDS ATTENTION</div>
+<div style="font-size:14.5px;font-weight:600;margin-top:9px">{{ attnTitle }}</div>
+<p style="margin:5px 0 0;font-size:13.5px;color:var(--ink2)">{{ attnBody }}</p>
+</div>
+<div style="padding:18px 20px;background:var(--glass);backdrop-filter:var(--blur-md);-webkit-backdrop-filter:var(--blur-md);border:1px solid var(--glass-border);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft)">
+<div style="font-size:11.5px;font-weight:700;letter-spacing:.13em;color:var(--ink2)">WAITING ON</div>
+<sc-for list="{{ waitingBrief }}" as="w" hint-placeholder-count="2">
+<div style="margin-top:10px">
+<div style="font-size:14px;font-weight:600">{{ w.who }}</div>
+<div style="font-size:13.5px;color:var(--ink2)">{{ w.what }}</div>
+</div>
+</sc-for>
+<sc-if value="{{ noWaiting }}" hint-placeholder-val="{{ false }}"><p style="margin:9px 0 0;font-size:13.5px;color:var(--ink3)">Nobody owes you anything right now.</p></sc-if>
+</div>
+<div style="padding:18px 20px;background:linear-gradient(150deg,var(--glass-strong),var(--tintcool));backdrop-filter:var(--blur-md);-webkit-backdrop-filter:var(--blur-md);border:1px solid var(--glass-border);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft)">
+<div style="font-size:11.5px;font-weight:700;letter-spacing:.13em;color:var(--ink2)">SUGGESTION</div>
+<p style="margin:9px 0 14px;font-size:13.5px;color:var(--ink)">{{ suggestion }}</p>
+<button onClick="{{ goAsk }}" style="border:1px solid var(--glass-border);background:var(--glass-strong);border-radius:10px;padding:9px 13px;font-size:13px;color:var(--ink2);min-height:38px" style-hover="color:var(--deep)">Talk it through</button>
+</div>
+<sc-if value="{{ checkinDot }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ goReview }}" style="text-align:left;padding:16px 18px;background:var(--glass-subtle);border:1px dashed var(--glass-border);border-radius:var(--radius-lg);color:var(--ink2);font-size:13.5px" style-hover="background:var(--glass)">Morning check-in · one question, one minute</button>
+</sc-if>
+</aside>
+</sc-if>
+</section>
+</sc-if>
+
+<sc-if value="{{ vToday }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Today">
+<h1 style="font-size:27px;letter-spacing:-.7px;margin:0 0 4px;font-weight:700">Today</h1>
+<p style="margin:0 0 24px;color:var(--ink);opacity:.85">Everything with a claim on the next few hours.</p>
+<sc-for list="{{ todayGroups }}" as="g" hint-placeholder-count="3">
+<div style="margin-bottom:26px">
+<div style="margin-bottom:8px"><div style="display:inline-flex;align-items:baseline;gap:10px;padding:7px 14px;border-radius:999px;background:var(--glass);backdrop-filter:var(--blur-sm);-webkit-backdrop-filter:var(--blur-sm);border:1px solid var(--glass-border)">
+<h2 style="font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--ink);margin:0">{{ g.label }}</h2>
+<span style="font-size:12.5px;color:var(--ink);opacity:.75">{{ g.count }}</span>
+</div></div>
+<div style="background:var(--glass);backdrop-filter:var(--blur-md);-webkit-backdrop-filter:var(--blur-md);border:1px solid var(--glass-border);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft);padding:6px 18px">
+<sc-for list="{{ g.items }}" as="t" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:13px;padding:13px 0;border-bottom:1px solid var(--line)">
+<input type="checkbox" onChange="{{ t.onToggle }}" aria-label="Complete" style="width:18px;height:18px;flex:none">
+<button onClick="{{ t.onEdit }}" style="min-width:0;flex:1;text-align:left;border:0;background:transparent;padding:0">
+<span style="display:block;font-size:14.5px;font-weight:550;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ t.title }}</span>
+<span style="display:block;font-size:12.5px;color:var(--ink3);margin-top:2px">{{ t.meta }}</span>
+</button>
+<sc-if value="{{ t.high }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font-size:11.5px;font-weight:600;color:var(--deep);background:var(--tintwarm);border-radius:20px;padding:4px 10px">priority</span></sc-if>
+</div>
+</sc-for>
+<sc-if value="{{ g.empty }}" hint-placeholder-val="{{ false }}"><div style="padding:14px 0;color:var(--ink3);font-size:13.5px">{{ g.emptyText }}</div></sc-if>
+</div>
+</div>
+</sc-for>
+</section>
+</sc-if>
+
+<sc-if value="{{ vTasks }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Tasks">
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:18px">
+<div><h1 style="font-size:27px;letter-spacing:-.7px;margin:0 0 4px;font-weight:700">Tasks</h1><p style="margin:0;color:var(--ink);opacity:.85">Concrete things you can finish.</p></div>
+<button onClick="{{ onAddTask }}" style="border:0;background:linear-gradient(135deg,var(--coral),var(--deep));color:#fff;border-radius:11px;padding:11px 16px;font-size:13.5px;font-weight:600;min-height:44px;box-shadow:0 8px 20px var(--glow)" style-hover="filter:brightness(1.05)">New task</button>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+<select value="{{ filter }}" onChange="{{ onFilter }}" aria-label="Filter tasks" style="border:1px solid var(--glass-border);background:var(--field);border-radius:10px;padding:10px 12px;min-height:42px;outline:none">
+<option value="open">Open</option>
+<option value="today">Due today</option>
+<option value="waiting">Waiting on others</option>
+<option value="inbox">Unsorted</option>
+<option value="all">All</option>
+<option value="done">Completed</option>
+</select>
+<input value="{{ query }}" onChange="{{ onQuery }}" placeholder="Search tasks" aria-label="Search tasks" style="flex:1;min-width:200px;border:1px solid var(--glass-border);background:var(--field);border-radius:10px;padding:10px 12px;min-height:42px;outline:none">
+</div>
+<div style="background:var(--glass);backdrop-filter:var(--blur-md);-webkit-backdrop-filter:var(--blur-md);border:1px solid var(--glass-border);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft);padding:6px 18px">
+<sc-for list="{{ taskItems }}" as="t" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;gap:13px;padding:13px 0;border-bottom:1px solid var(--line)">
+<input type="checkbox" checked="{{ t.done }}" onChange="{{ t.onToggle }}" aria-label="Complete" style="width:18px;height:18px;flex:none">
+<button onClick="{{ t.onEdit }}" style="min-width:0;flex:1;text-align:left;border:0;background:transparent;padding:0">
+<sc-if value="{{ t.done }}" hint-placeholder-val="{{ false }}"><span style="display:block;font-size:14.5px;color:var(--ink3);text-decoration:line-through;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ t.title }}</span></sc-if>
+<sc-if value="{{ t.open }}" hint-placeholder-val="{{ true }}"><span style="display:block;font-size:14.5px;font-weight:550;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ t.title }}</span></sc-if>
+<span style="display:block;font-size:12.5px;color:var(--ink3);margin-top:2px">{{ t.meta }}</span>
+</button>
+<sc-if value="{{ t.high }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font-size:11.5px;font-weight:600;color:var(--deep);background:var(--tintwarm);border-radius:20px;padding:4px 10px">priority</span></sc-if>
+<button onClick="{{ t.onDelete }}" title="Delete" style="flex:none;border:0;background:transparent;color:var(--ink3);padding:6px 8px;border-radius:8px" style-hover="color:var(--deep);background:var(--tintwarm)">×</button>
+</div>
+</sc-for>
+<sc-if value="{{ noTasks }}" hint-placeholder-val="{{ false }}"><div style="padding:26px 0;color:var(--ink3);font-size:13.5px">Nothing here. That is allowed.</div></sc-if>
+</div>
+<div style="margin-top:26px;padding:18px 20px;background:var(--glass-subtle);border:1px solid var(--glass-border);border-radius:var(--radius-lg)">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+<h2 style="font-size:13px;font-weight:650;letter-spacing:.1em;color:var(--ink2);margin:0">DECISIONS</h2>
+<button onClick="{{ toggleDecisions }}" style="border:0;background:transparent;color:var(--ink2);font-size:13px;padding:4px 6px" style-hover="color:var(--deep)">{{ decisionsLabel }}</button>
+</div>
+<sc-if value="{{ decisionsOpen }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:14px;display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ decisionItems }}" as="d" hint-placeholder-count="2">
+<button onClick="{{ d.onEdit }}" style="text-align:left;border:1px solid var(--glass-border);background:var(--glass);border-radius:var(--radius-md);padding:13px 15px;width:100%" style-hover="background:var(--glass-strong)">
+<span style="display:block;font-size:14px;font-weight:550">{{ d.title }}</span>
+<span style="display:block;font-size:12.5px;color:var(--ink3);margin-top:3px">{{ d.meta }}</span>
+<sc-if value="{{ d.hasNotes }}" hint-placeholder-val="{{ false }}"><span style="display:block;font-size:13px;color:var(--ink2);margin-top:7px">{{ d.notes }}</span></sc-if>
+</button>
+</sc-for>
+<button onClick="{{ onAddDecision }}" style="align-self:flex-start;border:1px solid var(--glass-border);background:var(--glass-strong);border-radius:10px;padding:9px 13px;font-size:13px;color:var(--ink2);min-height:40px" style-hover="color:var(--deep)">Record a decision</button>
+</div>
+</sc-if>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ vProjects }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Projects">
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:18px">
+<div><h1 style="font-size:27px;letter-spacing:-.7px;margin:0 0 4px;font-weight:700">Projects</h1><p style="margin:0;color:var(--ink);opacity:.85">Only the work that is currently alive.</p></div>
+<button onClick="{{ onAddProject }}" style="border:0;background:linear-gradient(135deg,var(--coral),var(--deep));color:#fff;border-radius:11px;padding:11px 16px;font-size:13.5px;font-weight:600;min-height:44px;box-shadow:0 8px 20px var(--glow)" style-hover="filter:brightness(1.05)">New project</button>
+</div>
+<div style="background:var(--glass);backdrop-filter:var(--blur-md);-webkit-backdrop-filter:var(--blur-md);border:1px solid var(--glass-border);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft);padding:6px 20px">
+<sc-for list="{{ allProjects }}" as="p" hint-placeholder-count="3">
+<button onClick="{{ p.onEdit }}" style="display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:0;border-bottom:1px solid var(--line);background:transparent;padding:16px 0" style-hover="background:var(--glass-subtle)">
+<span style="min-width:0;flex:1">
+<span style="display:block;font-size:15px;font-weight:600">{{ p.name }}</span>
+<span style="display:block;font-size:13px;color:var(--ink2);margin-top:3px">{{ p.next }}</span>
+<sc-if value="{{ p.hasNotes }}" hint-placeholder-val="{{ false }}"><span style="display:block;font-size:12.5px;color:var(--ink3);margin-top:5px">{{ p.notes }}</span></sc-if>
+</span>
+<span style="flex:none;font-size:11.5px;font-weight:600;color:var(--ink2);background:var(--glass-subtle);border:1px solid var(--glass-border);border-radius:20px;padding:5px 11px">{{ p.status }}</span>
+</button>
+</sc-for>
+<sc-if value="{{ noProjects }}" hint-placeholder-val="{{ false }}"><div style="padding:26px 0;color:var(--ink3);font-size:13.5px">No projects yet. Add only what is truly active.</div></sc-if>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ vCapture }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Capture">
+<h1 style="font-size:27px;letter-spacing:-.7px;margin:0 0 4px;font-weight:700">Capture</h1>
+<p style="margin:0 0 22px;color:var(--ink);opacity:.85">Drop the thoughts. Sort them later, or never. Anywhere in the app, ⌘/Ctrl + Shift + Space opens quick capture.</p>
+<div style="padding:22px;background:var(--glass-strong);backdrop-filter:var(--blur-lg);-webkit-backdrop-filter:var(--blur-lg);border:1px solid var(--glass-border);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft)">
+<textarea value="{{ dump }}" onChange="{{ onDump }}" placeholder="Type it before you forget it… One thought per line works best." aria-label="Brain dump" style="width:100%;min-height:190px;border:1px solid var(--glass-border);background:var(--field);border-radius:var(--radius-md);padding:14px;outline:none;line-height:1.6"></textarea>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+<button onClick="{{ onOrganize }}" style="border:0;background:linear-gradient(135deg,var(--coral),var(--deep));color:#fff;border-radius:11px;padding:11px 16px;font-size:13.5px;font-weight:600;min-height:44px;box-shadow:0 8px 20px var(--glow)" style-hover="filter:brightness(1.05)">Send to inbox</button>
+<button onClick="{{ onSaveNote }}" style="border:1px solid var(--glass-border);background:var(--glass-subtle);border-radius:11px;padding:11px 16px;font-size:13.5px;color:var(--ink2);min-height:44px" style-hover="background:var(--glass-strong)">Save as note</button>
+</div>
+</div>
+<div style="margin:28px 0 8px"><div style="display:inline-flex;align-items:baseline;gap:10px;padding:7px 14px;border-radius:999px;background:var(--glass);backdrop-filter:var(--blur-sm);-webkit-backdrop-filter:var(--blur-sm);border:1px solid var(--glass-border)">
+<h2 style="font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--ink);margin:0">INBOX</h2>
+<span style="font-size:12.5px;color:var(--ink);opacity:.75">{{ inboxCount }}</span>
+</div></div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ inboxItems }}" as="i" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:13px 16px;background:var(--glass);backdrop-filter:var(--blur-sm);-webkit-backdrop-filter:var(--blur-sm);border:1px solid var(--glass-border);border-radius:var(--radius-md)">
+<span style="flex:1;min-width:180px;font-size:14.5px">{{ i.title }}</span>
+<div style="display:flex;gap:6px;flex-wrap:wrap">
+<button onClick="{{ i.onToday }}" style="border:1px solid var(--glass-border);background:var(--tintwarm);color:var(--deep);border-radius:9px;padding:7px 11px;font-size:12.5px;min-height:36px" style-hover="filter:brightness(1.04)">Today</button>
+<button onClick="{{ i.onNext }}" style="border:1px solid var(--glass-border);background:var(--glass-subtle);color:var(--ink2);border-radius:9px;padding:7px 11px;font-size:12.5px;min-height:36px" style-hover="background:var(--glass-strong)">Next</button>
+<button onClick="{{ i.onWaiting }}" style="border:1px solid var(--glass-border);background:var(--glass-subtle);color:var(--ink2);border-radius:9px;padding:7px 11px;font-size:12.5px;min-height:36px" style-hover="background:var(--glass-strong)">Waiting</button>
+<button onClick="{{ i.onNote }}" style="border:1px solid var(--glass-border);background:var(--glass-subtle);color:var(--ink2);border-radius:9px;padding:7px 11px;font-size:12.5px;min-height:36px" style-hover="background:var(--glass-strong)">Note</button>
+<button onClick="{{ i.onDelete }}" title="Discard" style="border:0;background:transparent;color:var(--ink3);border-radius:9px;padding:7px 10px;min-height:36px" style-hover="color:var(--deep)">×</button>
+</div>
+</div>
+</sc-for>
+<sc-if value="{{ noInbox }}" hint-placeholder-val="{{ false }}"><div style="padding:16px 0;color:var(--ink3);font-size:13.5px">Inbox is empty.</div></sc-if>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ vNotes }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Notes">
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:18px">
+<div><h1 style="font-size:27px;letter-spacing:-.7px;margin:0 0 4px;font-weight:700">Notes</h1><p style="margin:0;color:var(--ink);opacity:.85">Reference material worth keeping.</p></div>
+<button onClick="{{ onAddNote }}" style="border:0;background:linear-gradient(135deg,var(--coral),var(--deep));color:#fff;border-radius:11px;padding:11px 16px;font-size:13.5px;font-weight:600;min-height:44px;box-shadow:0 8px 20px var(--glow)" style-hover="filter:brightness(1.05)">New note</button>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px">
+<sc-for list="{{ noteItems }}" as="n" hint-placeholder-count="3">
+<article style="padding:18px 20px;background:var(--glass);backdrop-filter:var(--blur-md);-webkit-backdrop-filter:var(--blur-md);border:1px solid var(--glass-border);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft);display:flex;flex-direction:column;gap:8px">
+<div style="font-size:11.5px;letter-spacing:.1em;font-weight:700;color:var(--ink3)">{{ n.date }}</div>
+<h3 style="margin:0;font-size:15.5px;font-weight:600">{{ n.title }}</h3>
+<p style="margin:0;color:var(--ink2);font-size:13.5px;white-space:pre-wrap">{{ n.body }}</p>
+<button onClick="{{ n.onDelete }}" style="align-self:flex-start;margin-top:4px;border:0;background:transparent;color:var(--ink3);font-size:12.5px;padding:4px 0" style-hover="color:var(--deep)">Delete</button>
+</article>
+</sc-for>
+<sc-if value="{{ noNotes }}" hint-placeholder-val="{{ false }}"><div style="padding:20px;color:var(--ink3);font-size:13.5px">No notes yet.</div></sc-if>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ vAsk }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Ask AI">
+<h1 style="font-size:27px;letter-spacing:-.7px;margin:0 0 4px;font-weight:700">Ask</h1>
+<p style="margin:0 0 22px;color:var(--ink);opacity:.85">Plain advice based on what is actually in here.</p>
+<div data-two="" style="display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:16px;align-items:start">
+<div style="padding:20px;background:var(--glass);backdrop-filter:var(--blur-md);-webkit-backdrop-filter:var(--blur-md);border:1px solid var(--glass-border);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft);display:flex;flex-direction:column;min-height:460px">
+<div style="display:flex;flex-direction:column;gap:10px;flex:1;overflow:auto;max-height:56vh">
+<sc-for list="{{ messages }}" as="m" hint-placeholder-count="2">
+<sc-if value="{{ m.isUser }}" hint-placeholder-val="{{ false }}">
+<div style="align-self:flex-end;max-width:82%;padding:11px 14px;border-radius:14px 14px 4px 14px;background:linear-gradient(135deg,var(--coral),var(--deep));color:#fff;white-space:pre-wrap;font-size:14px">{{ m.text }}</div>
+</sc-if>
+<sc-if value="{{ m.isAi }}" hint-placeholder-val="{{ true }}">
+<div style="align-self:flex-start;max-width:86%;padding:11px 14px;border-radius:14px 14px 14px 4px;background:var(--glass-strong);border:1px solid var(--glass-border);white-space:pre-wrap;font-size:14px">{{ m.text }}</div>
+</sc-if>
+</sc-for>
+</div>
+<div style="display:flex;gap:8px;border-top:1px solid var(--line);padding-top:14px;margin-top:14px">
+<textarea value="{{ askValue }}" onChange="{{ onAskInput }}" onKeyDown="{{ onAskKey }}" rows="2" placeholder="What's on your mind?" aria-label="Ask a question" style="flex:1;border:1px solid var(--glass-border);background:var(--field);border-radius:12px;padding:11px;outline:none;resize:none"></textarea>
+<button onClick="{{ onSend }}" style="border:0;background:linear-gradient(135deg,var(--coral),var(--deep));color:#fff;border-radius:11px;padding:0 18px;font-size:13.5px;font-weight:600;min-height:44px;box-shadow:0 8px 20px var(--glow)" style-hover="filter:brightness(1.05)">Ask</button>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ quickPrompts }}" as="q" hint-placeholder-count="5">
+<button onClick="{{ q.onClick }}" style="text-align:left;border:1px solid var(--glass-border);background:var(--glass);border-radius:var(--radius-md);padding:12px 14px;font-size:13.5px;color:var(--ink2);min-height:44px" style-hover="background:var(--glass-strong);color:var(--deep)">{{ q.label }}</button>
+</sc-for>
+<div style="padding:14px 16px;background:var(--glass-subtle);border:1px solid var(--glass-border);border-radius:var(--radius-md);margin-top:6px">
+<div style="font-size:13.5px;font-weight:600">Opinion mode</div>
+<p style="margin:4px 0 0;font-size:12.5px;color:var(--ink2)">One best move, a short reason, no circles.</p>
+</div>
+</div>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ vReview }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Review">
+<h1 style="font-size:27px;letter-spacing:-.7px;margin:0 0 4px;font-weight:700">Review</h1>
+<p style="margin:0 0 22px;color:var(--ink);opacity:.85">Three quick prompts. Not a journal you have to feed.</p>
+<div data-two="" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px">
+<sc-for list="{{ checkins }}" as="c" hint-placeholder-count="3">
+<div style="padding:18px 20px;background:var(--glass);backdrop-filter:var(--blur-md);-webkit-backdrop-filter:var(--blur-md);border:1px solid var(--glass-border);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft)">
+<div style="font-size:11.5px;font-weight:700;letter-spacing:.12em;color:var(--ink3)">{{ c.label }}</div>
+<h3 style="margin:8px 0 12px;font-size:15.5px;font-weight:600">{{ c.prompt }}</h3>
+<textarea value="{{ c.value }}" onChange="{{ c.onInput }}" placeholder="{{ c.placeholder }}" aria-label="Check-in" style="width:100%;min-height:110px;border:1px solid var(--glass-border);background:var(--field);border-radius:var(--radius-md);padding:12px;outline:none"></textarea>
+<button onClick="{{ c.onSave }}" style="margin-top:10px;border:1px solid var(--glass-border);background:var(--glass-subtle);border-radius:10px;padding:9px 14px;font-size:13px;color:var(--ink2);min-height:40px" style-hover="background:var(--glass-strong);color:var(--deep)">Save</button>
+</div>
+</sc-for>
+</div>
+<div style="margin:30px 0 10px"><div style="display:inline-flex;align-items:baseline;gap:10px;padding:7px 14px;border-radius:999px;background:var(--glass);backdrop-filter:var(--blur-sm);-webkit-backdrop-filter:var(--blur-sm);border:1px solid var(--glass-border)">
+<h2 style="font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--ink);margin:0">HISTORY</h2>
+</div></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px">
+<sc-for list="{{ reviewEntries }}" as="j" hint-placeholder-count="2">
+<article style="padding:18px 20px;background:var(--glass-subtle);border:1px solid var(--glass-border);border-radius:var(--radius-lg)">
+<div style="font-size:11.5px;letter-spacing:.1em;font-weight:700;color:var(--ink3)">{{ j.date }}</div>
+<h3 style="margin:7px 0 6px;font-size:15px;font-weight:600">{{ j.title }}</h3>
+<p style="margin:0;color:var(--ink2);font-size:13.5px;white-space:pre-wrap">{{ j.body }}</p>
+</article>
+</sc-for>
+<sc-if value="{{ noEntries }}" hint-placeholder-val="{{ false }}"><div style="padding:18px 0;color:var(--ink3);font-size:13.5px">History starts when something is worth keeping.</div></sc-if>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ vClear }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Clear Day" style="max-width:1080px">
+<h1 style="font-size:29px;letter-spacing:-.8px;margin:0 0 4px;font-weight:700">Clear the day</h1>
+<p style="margin:0 0 24px;color:var(--ink);opacity:.85">Close the loops, name tomorrow's first move, and stop carrying it.</p>
+<div style="padding:26px 28px;background:var(--glass-strong);backdrop-filter:var(--blur-lg);-webkit-backdrop-filter:var(--blur-lg);border:1px solid var(--glass-border);border-radius:var(--radius-lg);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),var(--shadow-lift)">
+<div data-two="" style="display:grid;grid-template-columns:1fr 1fr;gap:26px">
+<div>
+<div style="font-size:11.5px;font-weight:700;letter-spacing:.13em;color:var(--good)">DONE TODAY</div>
+<div style="margin-top:10px;display:flex;flex-direction:column;gap:7px">
+<sc-for list="{{ doneToday }}" as="t" hint-placeholder-count="2"><div style="font-size:13.5px;color:var(--ink2)">{{ t.title }}</div></sc-for>
+<sc-if value="{{ noDoneToday }}" hint-placeholder-val="{{ false }}"><div style="font-size:13.5px;color:var(--ink3)">Nothing checked off yet.</div></sc-if>
+</div>
+<div style="font-size:11.5px;font-weight:700;letter-spacing:.13em;color:var(--ink2);margin-top:22px">STILL OPEN</div>
+<div style="margin-top:10px;display:flex;flex-direction:column;gap:7px">
+<sc-for list="{{ stillOpen }}" as="t" hint-placeholder-count="3"><div style="font-size:13.5px;color:var(--ink2)">{{ t.title }}</div></sc-for>
+<sc-if value="{{ noStillOpen }}" hint-placeholder-val="{{ false }}"><div style="font-size:13.5px;color:var(--ink3)">Nothing open.</div></sc-if>
+</div>
+<div style="font-size:11.5px;font-weight:700;letter-spacing:.13em;color:var(--ink2);margin-top:22px">WAITING</div>
+<div style="margin-top:10px;display:flex;flex-direction:column;gap:7px">
+<sc-for list="{{ waitingList }}" as="t" hint-placeholder-count="2"><div style="font-size:13.5px;color:var(--ink2)">{{ t.title }}</div></sc-for>
+<sc-if value="{{ noWaitingList }}" hint-placeholder-val="{{ false }}"><div style="font-size:13.5px;color:var(--ink3)">No external dependencies.</div></sc-if>
+</div>
+</div>
+<div>
+<label style="display:block;font-size:11.5px;font-weight:700;letter-spacing:.13em;color:var(--deep)">TOMORROW · FIRST MOVE</label>
+<input value="{{ tomorrow }}" onChange="{{ onTomorrow }}" placeholder="One specific action" style="width:100%;margin-top:10px;border:1px solid var(--glass-border);background:var(--field);border-radius:var(--radius-md);padding:13px 14px;outline:none;font-size:15px">
+<label style="display:block;font-size:11.5px;font-weight:700;letter-spacing:.13em;color:var(--ink2);margin-top:22px">BRAIN DUMP</label>
+<textarea value="{{ clearDump }}" onChange="{{ onClearDump }}" placeholder="Anything still taking up space" style="width:100%;margin-top:10px;min-height:150px;border:1px solid var(--glass-border);background:var(--field);border-radius:var(--radius-md);padding:13px 14px;outline:none"></textarea>
+</div>
+</div>
+<button onClick="{{ onCloseDay }}" style="width:100%;margin-top:26px;border:0;background:linear-gradient(135deg,var(--coral),var(--deep));color:#fff;border-radius:13px;padding:15px;font-size:15.5px;font-weight:600;min-height:52px;box-shadow:0 12px 28px var(--glow)" style-hover="filter:brightness(1.05)">Close the day</button>
+<p style="margin:12px 0 0;font-size:12.5px;color:var(--ink3);text-align:center">Everything on today's board is archived and the board is emptied. Notes, projects and history are kept.</p>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ vSettings }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Settings" style="max-width:820px">
+<h1 style="font-size:27px;letter-spacing:-.7px;margin:0 0 4px;font-weight:700">Settings</h1>
+<p style="margin:0 0 22px;color:var(--ink);opacity:.85">Your data stays in this browser unless you export it.</p>
+<div style="padding:22px;background:var(--glass);backdrop-filter:var(--blur-md);-webkit-backdrop-filter:var(--blur-md);border:1px solid var(--glass-border);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft);display:flex;flex-direction:column;gap:14px">
+<label style="display:block"><span style="font-size:13px;color:var(--ink2)">OpenAI API key · optional</span><input type="password" value="{{ apiKey }}" onChange="{{ onApiKey }}" placeholder="Stored only in this browser" style="width:100%;margin-top:6px;border:1px solid var(--glass-border);background:var(--field);border-radius:10px;padding:11px;outline:none"></label>
+<div data-two="" style="display:grid;grid-template-columns:1fr 2fr;gap:12px">
+<label style="display:block"><span style="font-size:13px;color:var(--ink2)">Model</span><input value="{{ apiModel }}" onChange="{{ onApiModel }}" style="width:100%;margin-top:6px;border:1px solid var(--glass-border);background:var(--field);border-radius:10px;padding:11px;outline:none"></label>
+<label style="display:block"><span style="font-size:13px;color:var(--ink2)">Endpoint</span><input value="{{ apiEndpoint }}" onChange="{{ onApiEndpoint }}" style="width:100%;margin-top:6px;border:1px solid var(--glass-border);background:var(--field);border-radius:10px;padding:11px;outline:none"></label>
+</div>
+<p style="margin:0;font-size:12.5px;color:var(--ink3)">Without a key the built-in local advisor still works offline. With a key, your question and a brief summary of your data are sent from this browser to the endpoint above.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button onClick="{{ onSaveSettings }}" style="border:0;background:linear-gradient(135deg,var(--coral),var(--deep));color:#fff;border-radius:11px;padding:11px 16px;font-size:13.5px;font-weight:600;min-height:44px" style-hover="filter:brightness(1.05)">Save settings</button>
+<button onClick="{{ onExport }}" style="border:1px solid var(--glass-border);background:var(--glass-subtle);border-radius:11px;padding:11px 16px;font-size:13.5px;color:var(--ink2);min-height:44px" style-hover="background:var(--glass-strong)">Export backup</button>
+<label style="border:1px solid var(--glass-border);background:var(--glass-subtle);border-radius:11px;padding:12px 16px;font-size:13.5px;color:var(--ink2);min-height:44px;cursor:pointer">Import backup<input type="file" accept="application/json" onChange="{{ onImport }}" style="display:none"></label>
+<button onClick="{{ onReset }}" style="border:1px solid var(--ring);background:var(--tintwarm);color:var(--deep);border-radius:11px;padding:11px 16px;font-size:13.5px;min-height:44px" style-hover="filter:brightness(1.03)">Reset starter data</button>
+</div>
+<div style="border-top:1px solid var(--line);padding-top:14px;font-size:12.5px;color:var(--ink3)">{{ lastOpenedLabel }} · quick capture is ⌘/Ctrl + Shift + Space</div>
+</div>
+</section>
+</sc-if>
+
+</div>
+</main>
+</div>
+
+<sc-if value="{{ capOpen }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ closeCapture }}" style="position:fixed;inset:0;background:var(--scrim);backdrop-filter:blur(3px);z-index:60;display:flex;align-items:flex-start;justify-content:center;padding:14vh 20px 20px">
+<div onClick="{{ stop }}" style="width:min(620px,100%);padding:20px;background:var(--glass-strong);backdrop-filter:var(--blur-lg);-webkit-backdrop-filter:var(--blur-lg);border:1px solid var(--glass-border);border-radius:var(--radius-lg);box-shadow:var(--shadow-lift)">
+<div style="display:flex;align-items:center;gap:9px;margin-bottom:12px">
+<span style="width:7px;height:7px;border-radius:50%;background:var(--coral)"></span>
+<span style="font-size:11.5px;font-weight:700;letter-spacing:.13em;color:var(--deep)">QUICK CAPTURE</span>
+<span style="margin-left:auto;font-size:11.5px;color:var(--ink3)">Enter to save · Esc to close</span>
+</div>
+<textarea value="{{ capValue }}" onChange="{{ onCapInput }}" onKeyDown="{{ onCapKey }}" autoFocus="{{ true }}" placeholder="Type it before you forget it…" aria-label="Quick capture" style="width:100%;min-height:110px;border:1px solid var(--glass-border);background:var(--field);border-radius:var(--radius-md);padding:14px;outline:none;font-size:15px"></textarea>
+<div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">
+<sc-if value="{{ inboxDot }}" hint-placeholder-val="{{ false }}"><button onClick="{{ goTriage }}" style="margin-right:auto;border:0;background:transparent;color:var(--deep);font-size:13px;padding:10px 4px;min-height:42px">Triage inbox</button></sc-if>
+<button onClick="{{ closeCapture }}" style="border:1px solid var(--glass-border);background:var(--glass-subtle);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--ink2);min-height:42px">Cancel</button>
+<button onClick="{{ onCapSave }}" style="border:0;background:linear-gradient(135deg,var(--coral),var(--deep));color:#fff;border-radius:10px;padding:10px 18px;font-size:13.5px;font-weight:600;min-height:42px">Save it</button>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ formOpen }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ closeForm }}" style="position:fixed;inset:0;background:var(--scrim);backdrop-filter:blur(3px);z-index:60;display:grid;place-items:center;padding:20px">
+<div onClick="{{ stop }}" style="width:min(620px,100%);max-height:88vh;overflow:auto;padding:24px;background:var(--glass-strong);backdrop-filter:var(--blur-lg);-webkit-backdrop-filter:var(--blur-lg);border:1px solid var(--glass-border);border-radius:var(--radius-lg);box-shadow:var(--shadow-lift)">
+<h2 style="margin:0 0 16px;font-size:19px;font-weight:600">{{ formTitle }}</h2>
+<div style="display:flex;flex-direction:column;gap:12px">
+<input value="{{ fTitle }}" onChange="{{ onFTitle }}" placeholder="{{ fTitlePlaceholder }}" aria-label="Title" style="width:100%;border:1px solid var(--glass-border);background:var(--field);border-radius:10px;padding:12px;outline:none;font-size:15px">
+<sc-if value="{{ fIsTask }}" hint-placeholder-val="{{ false }}">
+<div data-two="" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<select value="{{ fProject }}" onChange="{{ onFProject }}" aria-label="Project" style="border:1px solid var(--glass-border);background:var(--field);border-radius:10px;padding:11px;outline:none">
+<option value="">No project</option>
+<sc-for list="{{ projectNames }}" as="p" hint-placeholder-count="3"><option value="{{ p.name }}">{{ p.name }}</option></sc-for>
+</select>
+<select value="{{ fPriority }}" onChange="{{ onFPriority }}" aria-label="Priority" style="border:1px solid var(--glass-border);background:var(--field);border-radius:10px;padding:11px;outline:none">
+<option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option>
+</select>
+<select value="{{ fStatus }}" onChange="{{ onFStatus }}" aria-label="Status" style="border:1px solid var(--glass-border);background:var(--field);border-radius:10px;padding:11px;outline:none">
+<option value="Today">Today</option><option value="Next">Next</option><option value="Waiting">Waiting</option><option value="Blocked">Blocked</option><option value="Someday">Someday</option><option value="Inbox">Inbox</option><option value="Done">Done</option>
+</select>
+<input type="date" value="{{ fDue }}" onChange="{{ onFDue }}" aria-label="Due date" style="border:1px solid var(--glass-border);background:var(--field);border-radius:10px;padding:11px;outline:none">
+<input value="{{ fWaiting }}" onChange="{{ onFWaiting }}" placeholder="Waiting on whom" aria-label="Waiting on" style="border:1px solid var(--glass-border);background:var(--field);border-radius:10px;padding:11px;outline:none">
+</div>
+</sc-if>
+<sc-if value="{{ fIsProject }}" hint-placeholder-val="{{ false }}">
+<div data-two="" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<select value="{{ fStatus }}" onChange="{{ onFStatus }}" aria-label="Status" style="border:1px solid var(--glass-border);background:var(--field);border-radius:10px;padding:11px;outline:none">
+<option value="Active">Active</option><option value="On track">On track</option><option value="Needs attention">Needs attention</option><option value="Paused">Paused</option><option value="Complete">Complete</option>
+</select>
+<input value="{{ fNext }}" onChange="{{ onFNext }}" placeholder="Next move" aria-label="Next move" style="border:1px solid var(--glass-border);background:var(--field);border-radius:10px;padding:11px;outline:none">
+</div>
+</sc-if>
+<sc-if value="{{ fIsDecision }}" hint-placeholder-val="{{ false }}">
+<select value="{{ fStatus }}" onChange="{{ onFStatus }}" aria-label="Status" style="border:1px solid var(--glass-border);background:var(--field);border-radius:10px;padding:11px;outline:none">
+<option value="Open">Open</option><option value="Made">Made</option><option value="Revisit">Revisit</option>
+</select>
+</sc-if>
+<textarea value="{{ fNotes }}" onChange="{{ onFNotes }}" placeholder="{{ fNotesPlaceholder }}" aria-label="Details" style="width:100%;min-height:96px;border:1px solid var(--glass-border);background:var(--field);border-radius:10px;padding:12px;outline:none"></textarea>
+</div>
+<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:18px">
+<button onClick="{{ closeForm }}" style="border:1px solid var(--glass-border);background:var(--glass-subtle);border-radius:10px;padding:10px 15px;font-size:13.5px;color:var(--ink2);min-height:42px">Cancel</button>
+<button onClick="{{ onFormSave }}" style="border:0;background:linear-gradient(135deg,var(--coral),var(--deep));color:#fff;border-radius:10px;padding:10px 18px;font-size:13.5px;font-weight:600;min-height:42px">Save</button>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;right:22px;bottom:22px;z-index:70;padding:12px 18px;background:var(--glass-strong);backdrop-filter:var(--blur-lg);-webkit-backdrop-filter:var(--blur-lg);border:1px solid var(--glass-border);border-radius:12px;box-shadow:var(--shadow-lift);font-size:13.5px">{{ toast }}</div>
+</sc-if>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;greetingName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Sierra&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Content&quot;},&quot;showIntelligence&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;nextCount&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:2,&quot;min&quot;:1,&quot;max&quot;:3,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Layout&quot;}}">
+class Component extends DCLogic {
+  KEY = 'sierra-executive-os-v1';
+  iso = () => new Date().toISOString().slice(0, 10);
+  uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
+  seed() {
+    const d = this.iso(), u = this.uid;
+    return {version:1,theme:'light',lastOpened:d,streak:1,lastCleared:'',morningDate:'',pushDate:'',
+      settings:{apiKey:'',model:'gpt-4.1-mini',endpoint:'https://api.openai.com/v1/responses'},
+      push:{primary:'Validate AT&T migration exceptions',secondary:'Prepare open kickoff decisions',next:'Outline manager training walkthrough'},
+      projects:[
+        {id:u(),name:'AT&T Mobility Migration',status:'On track',next:'Validate the remaining carrier exceptions',notes:'Carrier reports are the baseline.'},
+        {id:u(),name:'Laptop Assignment Validation',status:'Active',next:'Review unmatched inventory records',notes:''},
+        {id:u(),name:'Manager Training',status:'Needs attention',next:'Block a 45-minute rehearsal',notes:''}],
+      tasks:[
+        {id:u(),title:'Review unmatched AT&T carrier lines',project:'AT&T Mobility Migration',priority:'High',status:'Today',due:d,waiting:'',notes:'Preserve ambiguous identities for review.',created:d},
+        {id:u(),title:'Draft kickoff decision list',project:'AT&T Mobility Migration',priority:'Medium',status:'Next',due:'',waiting:'',notes:'',created:d},
+        {id:u(),title:'Confirm FirstNet booster details',project:'AT&T Mobility Migration',priority:'Medium',status:'Waiting',due:'',waiting:'Edil',notes:'Follow up if no reply tomorrow.',created:d},
+        {id:u(),title:'Rehearse manager training opening',project:'Manager Training',priority:'High',status:'Next',due:'',waiting:'',notes:'',created:d}],
+      decisions:[{id:u(),title:'Use carrier exports as the line baseline',status:'Made',date:d,notes:'Master and device sources enrich the baseline; they do not replace it.'}],
+      notes:[{id:u(),title:'Working rule',body:'Read → Search → Classify → Status → Update → NEXT',date:d}],
+      journal:[],checkins:{},archive:[],
+      chats:[{role:'ai',text:'I am here. Ask what to do next, what you might be missing, or paste a brain dump and I will help sort it.'}]};
+  }
+
+  load() {
+    let s = null;
+    try { s = JSON.parse(localStorage.getItem(this.KEY)); } catch (e) { s = null; }
+    if (!s || !s.tasks || !s.projects) s = this.seed();
+    s.settings = s.settings || {};
+    s.checkins = s.checkins || {};
+    s.chats = s.chats || [];
+    s.archive = s.archive || [];
+    s.journal = s.journal || [];
+    s.notes = s.notes || [];
+    s.decisions = s.decisions || [];
+    s.push = s.push || {primary:'',secondary:'',next:''};
+    const today = this.iso();
+    if (s.lastOpened !== today) {
+      const diff = Math.round((new Date(today) - new Date(s.lastOpened || today)) / 86400000);
+      s.streak = diff === 1 ? (s.streak || 0) + 1 : 1;
+      s.lastOpened = today;
+    }
+    return s;
+  }
+
+  state = {
+    data: this.load(), view: 'home', focus: false, cmd: '', cmdFocused: false,
+    capOpen: false, capValue: '', why: false, todayOpen: false, decOpen: false,
+    dump: '', askValue: '', filter: 'open', query: '', tomorrow: '', clearDump: '',
+    form: null, toast: '', ci: {}
+  };
+
+  componentDidMount() {
+    document.documentElement.dataset.theme = this.state.data.theme || 'light';
+    this.onKey = (e) => {
+      const mod = e.metaKey || e.ctrlKey;
+      if (mod && e.shiftKey && (e.code === 'Space' || e.key === ' ')) { e.preventDefault(); this.setState({ capOpen: true, capValue: '' }); return; }
+      if (mod && (e.key === 'k' || e.key === 'K')) { e.preventDefault(); const el = document.querySelector('input[aria-label="Ask, find, or capture anything"]'); if (el) el.focus(); return; }
+      if (e.key === 'Escape') this.setState({ capOpen: false, form: null, cmdFocused: false });
+    };
+    window.addEventListener('keydown', this.onKey);
+  }
+  componentWillUnmount() { window.removeEventListener('keydown', this.onKey); }
+
+  save(d) { try { localStorage.setItem(this.KEY, JSON.stringify(d)); } catch (e) {} }
+  mutate(fn, extra) {
+    const d = this.state.data;
+    fn(d);
+    this.save(d);
+    this.setState(Object.assign({ data: Object.assign({}, d) }, extra || {}));
+  }
+  flash(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: '' }), 1900); }
+
+  openTasks() { return this.state.data.tasks.filter(t => t.status !== 'Done'); }
+  bestTask() {
+    const d = this.iso();
+    return this.openTasks().slice().sort((a, b) =>
+      ((b.priority === 'High') - (a.priority === 'High')) ||
+      (((a.due && a.due <= d) ? 0 : 1) - ((b.due && b.due <= d) ? 0 : 1)) ||
+      ((a.status === 'Today' ? 0 : 1) - (b.status === 'Today' ? 0 : 1)))[0];
+  }
+  metaFor(t) {
+    const bits = [];
+    if (t.project) bits.push(t.project);
+    if (t.due) bits.push(t.due === this.iso() ? 'due today' : 'due ' + t.due);
+    if (t.waiting) bits.push('waiting on ' + t.waiting);
+    if (!bits.length) bits.push(t.status.toLowerCase());
+    return bits.join(' · ');
+  }
+  wrapTask(t) {
+    return {
+      id: t.id, title: t.title, meta: this.metaFor(t), done: t.status === 'Done', open: t.status !== 'Done',
+      high: t.priority === 'High' && t.status !== 'Done',
+      onToggle: () => this.mutate(d => { const x = d.tasks.find(y => y.id === t.id); x.status = x.status === 'Done' ? 'Next' : 'Done'; }),
+      onEdit: () => this.openForm('task', t.id),
+      onDelete: () => this.mutate(d => { d.tasks = d.tasks.filter(y => y.id !== t.id); }),
+      onPromote: () => this.mutate(d => { d.push.primary = t.title; d.pushDate = this.iso(); const x = d.tasks.find(y => y.id === t.id); if (x) x.status = 'Today'; }, { view: 'home' })
+    };
+  }
+
+  go(view) { this.setState({ view, cmdFocused: false, form: null, capOpen: false }); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+  openForm(kind, id) {
+    const d = this.state.data;
+    let item;
+    if (kind === 'task') item = d.tasks.find(x => x.id === id) || { id: this.uid(), title: '', project: '', priority: 'Medium', status: 'Next', due: '', waiting: '', notes: '', created: this.iso() };
+    else if (kind === 'project') item = d.projects.find(x => x.id === id) || { id: this.uid(), name: '', status: 'Active', next: '', notes: '' };
+    else if (kind === 'decision') item = d.decisions.find(x => x.id === id) || { id: this.uid(), title: '', status: 'Open', date: this.iso(), notes: '' };
+    else item = { id: this.uid(), title: '', body: '', date: this.iso() };
+    this.setState({ form: { kind: kind, fresh: !id, item: Object.assign({}, item) } });
+  }
+  setF(key, value) {
+    const f = this.state.form;
+    this.setState({ form: { kind: f.kind, fresh: f.fresh, item: Object.assign({}, f.item, { [key]: value }) } });
+  }
+  saveForm() {
+    const f = this.state.form; if (!f) return;
+    const it = f.item;
+    const label = f.kind === 'project' ? (it.name || '').trim() : (it.title || '').trim();
+    if (!label) return;
+    this.mutate(d => {
+      if (f.kind === 'task') { it.title = label; const i = d.tasks.findIndex(x => x.id === it.id); if (i < 0) d.tasks.push(it); else d.tasks[i] = it; }
+      else if (f.kind === 'project') { it.name = label; const i = d.projects.findIndex(x => x.id === it.id); if (i < 0) d.projects.push(it); else d.projects[i] = it; }
+      else if (f.kind === 'decision') { it.title = label; const i = d.decisions.findIndex(x => x.id === it.id); if (i < 0) d.decisions.push(it); else d.decisions[i] = it; }
+      else { it.title = label; it.body = it.notes || it.body || ''; d.notes.push(it); }
+    }, { form: null });
+    this.flash('Saved');
+  }
+
+  capture(text) {
+    const lines = String(text || '').split(/\n|[•;]/).map(x => x.trim().replace(/^[-*]\s*/, '')).filter(Boolean);
+    if (!lines.length) return 0;
+    this.mutate(d => { lines.forEach(title => d.tasks.push({ id: this.uid(), title, project: '', priority: 'Medium', status: 'Inbox', due: '', waiting: '', notes: '', created: this.iso() })); });
+    return lines.length;
+  }
+
+  localAdvice(q) {
+    const l = q.toLowerCase(), d = this.iso(), open = this.openTasks(), best = this.bestTask();
+    const wait = open.filter(t => t.status === 'Waiting'), over = open.filter(t => t.due && t.due < d), high = open.filter(t => t.priority === 'High');
+    if (l.includes('organize') || l.includes('brain dump')) return 'Put it in Capture and send it to the inbox. Each line becomes one line you can triage with a single tap later. Do not classify while capturing.';
+    if (l.includes('forget')) return over.length ? `You may be forgetting ${over.length} overdue item${over.length > 1 ? 's' : ''}. Start with "${over[0].title}."` : wait.length ? `Check the waiting list. "${wait[0].title}" is with ${wait[0].waiting || 'someone else'}. Decide whether it needs a nudge.` : 'Nothing obvious is missing. Check your calendar and messages once, then stop searching for hidden work.';
+    if (l.includes('rest of my day') || l.includes('plan')) return best ? `Do "${best.title}" first for 25 focused minutes. Then a short break, one waiting follow-up, and only then choose another action.` : 'Your list is clear. Use the next block to capture loose thoughts, then choose one small finish.';
+    if (l.includes('stop')) return high.length > 2 ? 'Stop treating every high-priority item as equally urgent. Pick one primary move and lower the rest for today.' : 'Stop reopening the whole system after you choose. Finish one useful piece before reorganizing again.';
+    if (l.includes('waiting')) return wait.length ? `You are waiting on ${wait.length} thing${wait.length > 1 ? 's' : ''}. The oldest is "${wait[0].title}" with ${wait[0].waiting || 'someone else'}.` : 'Nobody owes you anything right now.';
+    if (l.includes('next') || l.includes('should')) return best ? `My pick: ${best.title}. It is the clearest move with the most weight right now. Give it 25 minutes before checking anything else.` : 'Choose one small action you can fully finish in 15 minutes. The system does not need more organizing.';
+    return best ? `Based on what is here, I would protect "${best.title}" first. If your question is about a tradeoff, name the two choices and I will pick one.` : 'You have room to think. Tell me the two options you are weighing and I will give a direct opinion.';
+  }
+
+  async ask(q) {
+    q = String(q || '').trim(); if (!q) return;
+    this.mutate(d => { d.chats.push({ role: 'user', text: q }); d.chats.push({ role: 'ai', text: 'Thinking…' }); }, { view: 'ask', askValue: '' });
+    const s = this.state.data.settings || {};
+    let ans;
+    if (s.apiKey) {
+      try {
+        const summary = { push: this.state.data.push, openTasks: this.openTasks().slice(0, 20), projects: this.state.data.projects, waiting: this.state.data.tasks.filter(t => t.status === 'Waiting'), openDecisions: this.state.data.decisions.filter(x => x.status === 'Open') };
+        const r = await fetch(s.endpoint || 'https://api.openai.com/v1/responses', {
+          method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + s.apiKey },
+          body: JSON.stringify({ model: s.model || 'gpt-4.1-mini', instructions: 'You are Sierra\u2019s calm Executive OS advisor. Simple conversational language, no project-management jargon. Give one best next move and a short reason.', input: `Current OS summary: ${JSON.stringify(summary)}\n\nSierra asks: ${q}` })
+        });
+        if (!r.ok) throw new Error('API ' + r.status);
+        const j = await r.json();
+        ans = j.output_text || (j.output || []).flatMap(o => o.content || []).map(c => c.text || '').join('') || 'I could not read the API response.';
+      } catch (e) { ans = `The online advisor did not connect (${e.message}). Here is the local answer instead:\n\n${this.localAdvice(q)}`; }
+    } else ans = this.localAdvice(q);
+    this.mutate(d => { d.chats[d.chats.length - 1] = { role: 'ai', text: ans }; });
+  }
+
+  command(q) {
+    q = String(q || '').trim(); if (!q) return;
+    if (/^(add|new)\s+/i.test(q)) { const n = this.capture(q.replace(/^(add|new)\s+(task\s*)?/i, '')); this.setState({ cmd: '' }); this.flash(n ? 'Captured' : ''); return; }
+    if (/^(find|show|open)\s+/i.test(q)) { this.setState({ cmd: '', view: 'tasks', query: q.replace(/^(find|show|open)\s+/i, '').replace(/\s+(notes|items)$/i, '') }); return; }
+    if (/\?|^(what|how|should|can|why|plan|organize|help|tell me)/i.test(q)) { this.setState({ cmd: '' }); this.ask(q); return; }
+    const n = this.capture(q); this.setState({ cmd: '' }); if (n) this.flash('Captured — triage it later');
+  }
+
+  closeDay() {
+    const d0 = this.iso();
+    this.mutate(d => {
+      const done = d.tasks.filter(t => t.status === 'Done');
+      const open = d.tasks.filter(t => t.status !== 'Done');
+      d.archive.push({ id: 'day-' + Date.now().toString(36), date: d0, type: 'day-closeout', tasks: d.tasks.map(t => Object.assign({}, t)), completed: done.map(t => Object.assign({}, t)), push: Object.assign({}, d.push), tomorrow: this.state.tomorrow, dump: this.state.clearDump });
+      const body = [['Done', done.map(t => t.title).join('\n')], ['Cleared unfinished', open.map(t => t.title).join('\n')], ['Tomorrow\u2019s first move', this.state.tomorrow], ['Still on my mind', this.state.clearDump]].filter(x => (x[1] || '').trim()).map(x => `${x[0]}: ${x[1].trim()}`).join('\n\n');
+      if (body) d.journal.push({ id: 'close-' + Date.now().toString(36), title: 'Clear the Day', body, date: d0 });
+      d.tasks = [];
+      d.push = { primary: (this.state.tomorrow || '').trim(), secondary: '', next: '' };
+      d.pushDate = '';
+      d.lastCleared = d0;
+    }, { tomorrow: '', clearDump: '', view: 'home' });
+    this.flash('Today is closed. The board is clear.');
+  }
+
+  renderVals() {
+    const s = this.state, d = s.data, today = this.iso();
+    const open = this.openTasks();
+    const inbox = open.filter(t => t.status === 'Inbox');
+    const waiting = open.filter(t => t.status === 'Waiting');
+    const overdue = open.filter(t => t.due && t.due < today);
+    const dueToday = open.filter(t => t.status !== 'Waiting' && t.status !== 'Inbox' && (t.due === today || t.status === 'Today'));
+    const high = open.filter(t => t.priority === 'High' && t.status !== 'Waiting' && t.status !== 'Inbox');
+    const queued = open.filter(t => t.status === 'Next' || t.status === 'Someday' || t.status === 'Blocked');
+    const nextCount = Math.max(1, Math.min(3, this.props.nextCount ?? 2));
+    const hr = new Date().getHours();
+    const name = this.props.greetingName ?? 'Sierra';
+
+    const pushPrimary = (d.push && d.push.primary || '').trim();
+    const best = this.bestTask();
+    const nowTitle = pushPrimary || (best && best.title) || 'Nothing chosen yet';
+    const nowTask = best;
+    const nextPool = open.filter(t => t.title !== nowTitle && t.status !== 'Waiting' && t.status !== 'Inbox');
+    const nextItems = nextPool.slice(0, nextCount).map(t => this.wrapTask(t));
+
+    const attn = overdue.length
+      ? { title: overdue[0].project || 'Overdue', body: `${overdue.length} item${overdue.length > 1 ? 's are' : ' is'} past due. Oldest: ${overdue[0].title}.` }
+      : d.projects.filter(p => /attention/i.test(p.status))[0]
+        ? { title: d.projects.filter(p => /attention/i.test(p.status))[0].name, body: d.projects.filter(p => /attention/i.test(p.status))[0].next || 'This one needs a decision.' }
+        : { title: 'All clear', body: 'Nothing critical is hiding right now.' };
+
+    const forms = s.form || {};
+    const fi = forms.item || {};
+
+    const checkinDefs = [
+      ['morning', 'MORNING', 'What actually matters today?', 'One or two things, not ten.'],
+      ['midday', 'MIDDAY', 'What changed, and what is stuck?', 'Also: what should you stop doing?'],
+      ['evening', 'END OF DAY', 'Wins, open loops, tomorrow\u2019s first move', 'Short is fine.']
+    ];
+
+    const focus = s.focus;
+
+    return {
+      focus,
+      focusLabel: focus ? 'Exit focus' : 'Focus',
+      toggleFocus: () => this.setState({ focus: !focus, view: 'home' }),
+      vHome: s.view === 'home', vToday: s.view === 'today', vTasks: s.view === 'tasks', vProjects: s.view === 'projects',
+      vCapture: s.view === 'capture', vNotes: s.view === 'notes', vAsk: s.view === 'ask', vReview: s.view === 'review',
+      vClear: s.view === 'clear', vSettings: s.view === 'settings',
+      goHome: () => this.go('home'), goToday: () => this.go('today'), goTasks: () => this.go('tasks'),
+      goProjects: () => this.go('projects'), goNotes: () => this.go('notes'), goAsk: () => this.go('ask'),
+      goReview: () => this.go('review'), goClear: () => this.go('clear'), goSettings: () => this.go('settings'),
+      openCapture: () => this.setState({ capOpen: true, capValue: '' }),
+      goCapture: () => this.go('capture'),
+      inboxDot: inbox.length > 0,
+      goTriage: () => this.setState({ capOpen: false, capValue: '', view: 'capture' }),
+      toggleTheme: () => { const t = d.theme === 'dark' ? 'light' : 'dark'; document.documentElement.dataset.theme = t; this.mutate(x => { x.theme = t; }); },
+      overdueDot: overdue.length > 0,
+      checkinDot: !(d.checkins[today] && d.checkins[today].morning) && hr < 14,
+      streakLabel: `${d.streak || 1} day${(d.streak || 1) === 1 ? '' : 's'} showing up`,
+      lastOpenedLabel: 'Last opened ' + (d.lastOpened === today ? 'today' : d.lastOpened),
+
+      cmd: s.cmd, cmdFocused: s.cmdFocused,
+      onCmd: (e) => this.setState({ cmd: e.target.value }),
+      onCmdFocus: () => this.setState({ cmdFocused: true }),
+      onCmdBlur: () => setTimeout(() => this.setState({ cmdFocused: false }), 120),
+      onCmdKey: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.command(s.cmd); } },
+      cmdChips: [
+        { label: 'What should I do next?', onClick: () => this.ask('What should I do next?') },
+        { label: 'Show waiting items', onClick: () => this.setState({ view: 'tasks', filter: 'waiting', cmd: '', cmdFocused: false }) },
+        { label: 'Brain dump…', onClick: () => this.setState({ capOpen: true, capValue: '', cmd: '', cmdFocused: false }) },
+        { label: 'Add task…', onClick: () => { this.setState({ cmdFocused: false }); this.openForm('task'); } },
+        { label: 'What am I forgetting?', onClick: () => this.ask('What am I forgetting?') },
+        { label: 'Open projects', onClick: () => this.setState({ view: 'projects', cmd: '', cmdFocused: false }) }
+      ],
+
+      dateStr: new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' }),
+      greeting: `Good ${hr < 12 ? 'morning' : hr < 18 ? 'afternoon' : 'evening'}, ${name}`,
+      nowTitle,
+      nowSupport: nowTask && nowTask.project ? `${nowTask.project} · one clear outcome that makes the rest of the day easier.` : 'One clear outcome that makes the rest of the day easier.',
+      startLabel: 'Start now',
+      onStartNow: () => this.setState({ focus: true, view: 'home' }),
+      onFinishNow: () => {
+        const match = d.tasks.filter(t => t.status !== 'Done' && t.title === nowTitle)[0] || nowTask;
+        if (!match && !pushPrimary) { this.flash('Nothing to finish yet — pick something first.'); return; }
+        this.mutate(x => { if (match) { const t = x.tasks.find(y => y.id === match.id); if (t) t.status = 'Done'; } x.push.primary = ''; });
+        this.flash('Done. Next one is smaller than it looks.');
+      },
+      onChangeNow: () => this.setState({ view: 'tasks', filter: 'open' }),
+      whyOpen: s.why,
+      toggleWhy: () => this.setState({ why: !s.why }),
+      whyText: overdue.length ? `It is the highest-weight item still open, and ${overdue.length} thing${overdue.length > 1 ? 's have' : ' has'} already slipped past due. Finishing this one removes the loudest source of noise.` : high.length ? 'It carries a high priority and a real due date, and nothing else you have queued unblocks as much work.' : 'It is the clearest thing you can actually finish right now, which matters more than picking perfectly.',
+
+      nextItems, noNext: nextItems.length === 0,
+      showCounts: !focus, showProjects: !focus,
+      showIntel: !focus && (this.props.showIntelligence ?? true),
+      cPriority: high.length, cQueued: queued.length, cWaiting: waiting.length, cOverdue: overdue.length,
+      todayOpen: s.todayOpen,
+      todayToggleLabel: s.todayOpen ? 'Hide details' : 'Show details',
+      toggleToday: () => this.setState({ todayOpen: !s.todayOpen }),
+      todayItems: dueToday.concat(high.filter(t => dueToday.indexOf(t) < 0)).slice(0, 8).map(t => this.wrapTask(t)),
+      homeProjects: d.projects.slice(0, 4).map(p => ({ name: p.name, next: p.next ? 'Next: ' + p.next : 'No next move chosen', attn: /attention/i.test(p.status), onClick: () => this.go('projects') })),
+
+      attnTitle: attn.title, attnBody: attn.body,
+      waitingBrief: waiting.slice(0, 2).map(t => ({ who: t.waiting || 'Someone', what: t.title })),
+      noWaiting: waiting.length === 0,
+      suggestion: this.localAdvice('what should I do next?'),
+
+      todayGroups: [
+        { label: 'OVERDUE', count: overdue.length ? overdue.length + ' item' + (overdue.length > 1 ? 's' : '') : '', items: overdue.map(t => this.wrapTask(t)), empty: overdue.length === 0, emptyText: 'Nothing has slipped.' },
+        { label: 'DUE TODAY', count: dueToday.length ? dueToday.length + ' item' + (dueToday.length > 1 ? 's' : '') : '', items: dueToday.map(t => this.wrapTask(t)), empty: dueToday.length === 0, emptyText: 'Nothing is claimed for today yet.' },
+        { label: 'WAITING ON OTHERS', count: waiting.length ? waiting.length + ' item' + (waiting.length > 1 ? 's' : '') : '', items: waiting.map(t => this.wrapTask(t)), empty: waiting.length === 0, emptyText: 'No external dependencies.' },
+        { label: 'QUEUED', count: queued.length ? queued.length + ' item' + (queued.length > 1 ? 's' : '') : '', items: queued.map(t => this.wrapTask(t)), empty: queued.length === 0, emptyText: 'Queue is empty.' }
+      ],
+
+      filter: s.filter, query: s.query,
+      onFilter: (e) => this.setState({ filter: e.target.value }),
+      onQuery: (e) => this.setState({ query: e.target.value }),
+      onAddTask: () => this.openForm('task'),
+      taskItems: (() => {
+        const q = (s.query || '').toLowerCase();
+        let a = d.tasks.filter(t => !q || JSON.stringify(t).toLowerCase().includes(q));
+        if (s.filter === 'open') a = a.filter(t => t.status !== 'Done' && t.status !== 'Waiting');
+        if (s.filter === 'today') a = a.filter(t => t.due === today || t.status === 'Today');
+        if (s.filter === 'waiting') a = a.filter(t => t.status === 'Waiting');
+        if (s.filter === 'inbox') a = a.filter(t => t.status === 'Inbox');
+        if (s.filter === 'done') a = a.filter(t => t.status === 'Done');
+        return a.map(t => this.wrapTask(t));
+      })(),
+      noTasks: (() => {
+        const q = (s.query || '').toLowerCase();
+        let a = d.tasks.filter(t => !q || JSON.stringify(t).toLowerCase().includes(q));
+        if (s.filter === 'open') a = a.filter(t => t.status !== 'Done' && t.status !== 'Waiting');
+        if (s.filter === 'today') a = a.filter(t => t.due === today || t.status === 'Today');
+        if (s.filter === 'waiting') a = a.filter(t => t.status === 'Waiting');
+        if (s.filter === 'inbox') a = a.filter(t => t.status === 'Inbox');
+        if (s.filter === 'done') a = a.filter(t => t.status === 'Done');
+        return a.length === 0;
+      })(),
+      decisionsOpen: s.decOpen,
+      decisionsLabel: s.decOpen ? 'Hide' : `Show (${d.decisions.length})`,
+      toggleDecisions: () => this.setState({ decOpen: !s.decOpen }),
+      decisionItems: d.decisions.map(x => ({ title: x.title, meta: `${x.status} · ${x.date || ''}`, notes: x.notes, hasNotes: !!x.notes, onEdit: () => this.openForm('decision', x.id) })),
+      onAddDecision: () => this.openForm('decision'),
+
+      allProjects: d.projects.map(p => ({ name: p.name, status: p.status, next: p.next ? 'Next: ' + p.next : 'No next move chosen', notes: p.notes, hasNotes: !!p.notes, onEdit: () => this.openForm('project', p.id) })),
+      noProjects: d.projects.length === 0,
+      onAddProject: () => this.openForm('project'),
+
+      dump: s.dump,
+      onDump: (e) => this.setState({ dump: e.target.value }),
+      onOrganize: () => { const n = this.capture(s.dump); if (n) { this.setState({ dump: '' }); this.flash(`${n} item${n > 1 ? 's' : ''} in the inbox`); } },
+      onSaveNote: () => { if (!s.dump.trim()) return; this.mutate(x => x.notes.push({ id: this.uid(), title: 'Brain dump', body: s.dump.trim(), date: today }), { dump: '' }); this.flash('Saved as a note'); },
+      inboxItems: inbox.map(t => ({
+        title: t.title,
+        onToday: () => this.mutate(x => { const y = x.tasks.find(z => z.id === t.id); y.status = 'Today'; y.due = today; }),
+        onNext: () => this.mutate(x => { x.tasks.find(z => z.id === t.id).status = 'Next'; }),
+        onWaiting: () => this.mutate(x => { x.tasks.find(z => z.id === t.id).status = 'Waiting'; }),
+        onNote: () => this.mutate(x => { x.notes.push({ id: this.uid(), title: 'Captured thought', body: t.title, date: today }); x.tasks = x.tasks.filter(z => z.id !== t.id); }),
+        onDelete: () => this.mutate(x => { x.tasks = x.tasks.filter(z => z.id !== t.id); })
+      })),
+      inboxCount: inbox.length ? `${inbox.length} to triage` : 'clear',
+      noInbox: inbox.length === 0,
+
+      noteItems: d.notes.slice().reverse().map(n => ({ title: n.title, body: n.body, date: n.date, onDelete: () => this.mutate(x => { x.notes = x.notes.filter(y => y.id !== n.id); }) })),
+      noNotes: d.notes.length === 0,
+      onAddNote: () => this.openForm('note'),
+
+      messages: d.chats.slice(-30).map(m => ({ text: m.text, isUser: m.role === 'user', isAi: m.role !== 'user' })),
+      askValue: s.askValue,
+      onAskInput: (e) => this.setState({ askValue: e.target.value }),
+      onAskKey: (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.ask(s.askValue); } },
+      onSend: () => this.ask(s.askValue),
+      quickPrompts: ['What should I do next?', 'What am I forgetting?', 'Plan the rest of my day', 'What should I stop doing?', 'What am I waiting on?'].map(label => ({ label, onClick: () => this.ask(label) })),
+
+      checkins: checkinDefs.map(([key, label, prompt, placeholder]) => ({
+        key, label, prompt, placeholder,
+        value: (s.ci[key] !== undefined) ? s.ci[key] : ((d.checkins[today] || {})[key] || ''),
+        onInput: (e) => this.setState({ ci: Object.assign({}, s.ci, { [key]: e.target.value }) }),
+        onSave: () => {
+          const v = (s.ci[key] !== undefined) ? s.ci[key] : ((d.checkins[today] || {})[key] || '');
+          this.mutate(x => {
+            x.checkins[today] = x.checkins[today] || {};
+            if (key === 'evening') { if (v.trim()) x.journal.push({ id: 'ev-' + Date.now().toString(36), title: 'End of day', body: v.trim(), date: today }); x.checkins[today].evening = ''; }
+            else x.checkins[today][key] = v;
+            if (key === 'morning') x.morningDate = today;
+          }, { ci: Object.assign({}, s.ci, { [key]: key === 'evening' ? '' : s.ci[key] }) });
+          this.flash('Saved');
+        }
+      })),
+      reviewEntries: d.journal.slice().reverse().map(j => ({ title: j.title, body: j.body, date: j.date })),
+      noEntries: d.journal.length === 0,
+
+      doneToday: d.tasks.filter(t => t.status === 'Done').map(t => ({ title: t.title })),
+      noDoneToday: d.tasks.filter(t => t.status === 'Done').length === 0,
+      stillOpen: open.filter(t => t.status !== 'Waiting').map(t => ({ title: t.title })),
+      noStillOpen: open.filter(t => t.status !== 'Waiting').length === 0,
+      waitingList: waiting.map(t => ({ title: `${t.title} — ${t.waiting || 'someone else'}` })),
+      noWaitingList: waiting.length === 0,
+      tomorrow: s.tomorrow, clearDump: s.clearDump,
+      onTomorrow: (e) => this.setState({ tomorrow: e.target.value }),
+      onClearDump: (e) => this.setState({ clearDump: e.target.value }),
+      onCloseDay: () => this.closeDay(),
+
+      apiKey: (d.settings.apiKey || ''), apiModel: (d.settings.model || 'gpt-4.1-mini'), apiEndpoint: (d.settings.endpoint || 'https://api.openai.com/v1/responses'),
+      onApiKey: (e) => this.mutate(x => { x.settings.apiKey = e.target.value; }),
+      onApiModel: (e) => this.mutate(x => { x.settings.model = e.target.value; }),
+      onApiEndpoint: (e) => this.mutate(x => { x.settings.endpoint = e.target.value; }),
+      onSaveSettings: () => this.flash('Settings saved'),
+      onExport: () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d, null, 2)], { type: 'application/json' })); a.download = `Sierra-Executive-OS-backup-${today}.json`; a.click(); URL.revokeObjectURL(a.href); },
+      onImport: async (e) => {
+        try { const x = JSON.parse(await e.target.files[0].text()); if (!x.tasks || !x.projects) throw new Error('bad'); this.save(x); this.setState({ data: x }); this.flash('Backup restored'); }
+        catch (err) { this.flash('That does not look like a backup'); }
+      },
+      onReset: () => { if (confirm('Replace everything with the starter data? Export a backup first if you want to keep your work.')) { const x = this.seed(); this.save(x); this.setState({ data: x }); this.flash('Starter data restored'); } },
+
+      capOpen: s.capOpen, capValue: s.capValue,
+      onCapInput: (e) => this.setState({ capValue: e.target.value }),
+      onCapKey: (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); const n = this.capture(s.capValue); this.setState({ capOpen: false, capValue: '' }); if (n) this.flash('Captured'); } },
+      onCapSave: () => { const n = this.capture(s.capValue); this.setState({ capOpen: false, capValue: '' }); if (n) this.flash('Captured'); },
+      closeCapture: () => this.setState({ capOpen: false }),
+      stop: (e) => e.stopPropagation(),
+
+      formOpen: !!s.form,
+      closeForm: () => this.setState({ form: null }),
+      formTitle: s.form ? `${forms.fresh ? 'Add' : 'Edit'} ${forms.kind}` : '',
+      fIsTask: forms.kind === 'task', fIsProject: forms.kind === 'project', fIsDecision: forms.kind === 'decision',
+      fTitle: forms.kind === 'project' ? (fi.name || '') : (fi.title || ''),
+      fTitlePlaceholder: forms.kind === 'project' ? 'Project name' : forms.kind === 'decision' ? 'What was decided?' : forms.kind === 'note' ? 'Note title' : 'What needs doing?',
+      fNotesPlaceholder: forms.kind === 'note' ? 'Note body' : 'Useful detail',
+      onFTitle: (e) => this.setF(forms.kind === 'project' ? 'name' : 'title', e.target.value),
+      fProject: fi.project || '', onFProject: (e) => this.setF('project', e.target.value),
+      fPriority: fi.priority || 'Medium', onFPriority: (e) => this.setF('priority', e.target.value),
+      fStatus: fi.status || '', onFStatus: (e) => this.setF('status', e.target.value),
+      fDue: fi.due || '', onFDue: (e) => this.setF('due', e.target.value),
+      fWaiting: fi.waiting || '', onFWaiting: (e) => this.setF('waiting', e.target.value),
+      fNext: fi.next || '', onFNext: (e) => this.setF('next', e.target.value),
+      fNotes: fi.notes !== undefined ? (fi.notes || '') : (fi.body || ''), onFNotes: (e) => this.setF('notes', e.target.value),
+      projectNames: d.projects.map(p => ({ name: p.name })),
+      onFormSave: () => this.saveForm(),
+
+      hasToast: !!s.toast, toast: s.toast
+    };
+  }
+}
+</script>
+</body>
+</html>
